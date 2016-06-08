@@ -4,6 +4,7 @@
 #include <thread>
 #include <functional>
 
+#if defined __cplusplus && defined CPPHEAPWATCH && !defined __EMSCRIPTEN__
 
 CPPHeapWatch::ScopeGuard::ScopeGuard(const char* scopeName)
 {
@@ -15,3 +16,5 @@ CPPHeapWatch::ScopeGuard::~ScopeGuard()
 {
 	CPPHeapWatch::HeapManager::PopScope(m_id);
 }
+
+#endif

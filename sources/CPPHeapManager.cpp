@@ -144,7 +144,7 @@ void* CPPHeapWatch::HeapManager::Alloc(size_t size, bool isArray)
 
 	auto scope = GetMemoryScopeMap().find(id);
 	const char* scopeName = "";
-	if (scope != GetMemoryScopeMap().end() && scope->second.size() > 1)
+	if (scope != GetMemoryScopeMap().end() && scope->second.size() > 0)
 	{
 		scopeName = scope->second.back();
 	}

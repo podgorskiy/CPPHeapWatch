@@ -28,14 +28,18 @@ namespace CPPHeapWatch
 		{
 			SearchScopeTrigger()
 			{
+#if defined CPPHEAPWATCH && !defined __EMSCRIPTEN__
 				HeapManager::LeakSearchScope(true);
+#endif
 			}
 
 			~SearchScopeTrigger()
 			{
+#if defined CPPHEAPWATCH && !defined __EMSCRIPTEN__
 				HeapManager::LeakSearchScope(false);
 				HeapManager::SanityCheck();
 				HeapManager::CheckLeaks();
+#endif
 			}
 		};
 	public:

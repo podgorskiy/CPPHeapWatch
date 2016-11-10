@@ -67,6 +67,7 @@ typedef std::map<int, MemoryScope, std::less<int>, CustomAllocator<AllocationBuf
 int CPPHeapWatch::HeapManager::m_allocCount = 0;
 size_t CPPHeapWatch::HeapManager::m_memoryPeak = 0;
 size_t CPPHeapWatch::HeapManager::m_currentMemory = 0;
+bool CPPHeapWatch::HeapManager::m_sanityCheck = false;
 static const unsigned int k_checkCode = 0xC0DEC0DE;
 static bool m_trackLeaks = false;
 
@@ -135,10 +136,16 @@ void CPPHeapWatch::HeapManager::LeakSearchScope(bool enabled)
 	m_trackLeaks = enabled;
 }
 
+void CPPHeapWatch::HeapManager::EnableSanityCheck(bool enable)
+{
+	m_sanityCheck = enable;
+}
+
 void* CPPHeapWatch::HeapManager::Alloc(size_t size, bool isArray)
 {
 	AllocationsMapLock guard;
-	//SanityCheck();
+
+	SanityCheck();
 
 	int id = std::hash<std::thread::id>()(std::this_thread::get_id());
 
@@ -190,7 +197,7 @@ void CPPHeapWatch::HeapManager::Free(void* pointer, bool isArray)
 {
 	AllocationsMapLock guard;
 
-	//SanityCheck();
+	SanityCheck();	
 
 	if (pointer == NULL)
 	{
@@ -256,7 +263,7 @@ void CPPHeapWatch::HeapManager::CheckLeaks()
 		{
 			continue;
 		}
-		if (it->second.m_fileName != nullptr)
+		if (it->second.m_fileName == nullptr)
 		{
 			notAnnotatedLeaks++;
 			printf("0x%p: %llu bytes, scope: %s\n", it->second.m_pointer, static_cast<unsigned long long>(it->second.m_size), it->second.m_scopeName);
@@ -299,6 +306,10 @@ void CPPHeapWatch::HeapManager::CheckLeaks()
 
 void CPPHeapWatch::HeapManager::SanityCheck()
 {
+	if (!m_sanityCheck)
+	{
+		return;
+	}
 	AllocationsMapLock guard;
 
 	int count = 0;

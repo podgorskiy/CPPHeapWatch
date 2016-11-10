@@ -13,13 +13,16 @@ namespace CPPHeapWatch
 		static void CheckLeaks();
 		static size_t GetTotallAllocatedMemory();
 		static void SanityCheck();
+		static void EnableSanityCheck(bool enable);
 		static void LeakSearchScope(bool enabled);
 		static void PushScope(int id, const char* scopeName);
 		static void PopScope(int id);
+
 	private:
 		static int m_allocCount;
 		static size_t m_memoryPeak;
 		static size_t m_currentMemory;
+		static bool m_sanityCheck;
 	};
 	
 	class Guard

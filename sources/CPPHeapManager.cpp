@@ -7,6 +7,7 @@
 #include <csignal>
 #include <cassert>
 #include <mutex>
+#include <cstring>
 
 #ifdef _DEBUG
 #ifdef _WIN32

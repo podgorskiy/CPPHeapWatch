@@ -8,6 +8,7 @@
 #include <cassert>
 #include <mutex>
 #include <cstring>
+#include <thread>
 
 #ifdef _DEBUG
 #ifdef _WIN32
